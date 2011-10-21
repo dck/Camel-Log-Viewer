@@ -12,8 +12,8 @@ my $theCommand = "log";
 Xchat::register($script_name, $script_version, $script_description);
 
 Xchat::print "\n\n\00312.::    $script_name    ::.\003\n";
-Xchat::print "\00312:::    Version $script_version  :::\003\n";
-Xchat::print "\00312:::    © Deck    :::\003\n\n";
+Xchat::print "\00312:::    Version $script_version        :::\003\n";
+Xchat::print "\00312:::    © Deck             :::\003\n\n";
 
 
 my $options = { 
@@ -26,7 +26,13 @@ Xchat::hook_command( $theCommand, \&cbTheCommand, $options );
 
 sub cbTheCommand
 {
-    Xchat::print ("Hello");
+    my $logdir = Xchat::get_info("xchatdir")."/scrollback/".Xchat::get_info("network");
+    my $logfile = $logdir."/".lc(Xchat::get_info("channel")).".txt";
+    open my $fh, "<", $logfile or die "$logfile: $!\n";
+    my $str = <$fh>;
+    $str =~ s/^[^ ]+//;
+    close $fh;
+    Xchat::print($str);
     return Xchat::EAT_ALL;
 }
-
+ 
